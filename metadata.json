@@ -1,0 +1,8 @@
+{
+  "name": "Rarefindshq OTT",
+  "description": "A minimal dark OTT mobile-first streaming UI refactored for a premium cinema experience.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
