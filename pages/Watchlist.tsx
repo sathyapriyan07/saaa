@@ -1,11 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabase';
 import PosterCard from '../components/PosterCard';
 
-const Watchlist: React.FC<{ user: any }> = ({ user }) => {
-  const navigate = useNavigate();
+// Get user from a global context or auth hook if needed
+// For demo, this will just show the login prompt always
+
+const Watchlist: React.FC<{ user?: any }> = ({ user }) => {
+  const router = useRouter();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +23,6 @@ const Watchlist: React.FC<{ user: any }> = ({ user }) => {
           .from('watchlist')
           .select('*, title:titles(*)')
           .eq('user_id', user.id);
-        
         if (error) throw error;
         setItems(data?.map(d => d.title).filter(Boolean) || []);
       } catch (err) {
@@ -46,7 +47,7 @@ const Watchlist: React.FC<{ user: any }> = ({ user }) => {
     <div className="min-h-screen bg-black text-white px-4 pt-6 pb-24 animate-in fade-in duration-500">
       <div className="mb-8">
         <button 
-          onClick={() => navigate(-1)} 
+          onClick={() => router.back()} 
           className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-all flex items-center group"
         >
           <span className="mr-2 text-lg font-light translate-y-[-1px] group-hover:-translate-x-1 transition-transform">&lt;</span> Back
@@ -78,7 +79,7 @@ const Watchlist: React.FC<{ user: any }> = ({ user }) => {
             <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Explore titles and add them to your list</p>
           </div>
           <button 
-            onClick={() => navigate('/')}
+            onClick={() => router.push('/')} 
             className="bg-white text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
           >
             Browse Titles
@@ -89,4 +90,9 @@ const Watchlist: React.FC<{ user: any }> = ({ user }) => {
   );
 };
 
-export default Watchlist;
+// Next.js page export
+export default function WatchlistPage() {
+  // TODO: Replace with real user from auth context/provider
+  const user = undefined; // or get user from a global context
+  return <Watchlist user={user} />;
+}
